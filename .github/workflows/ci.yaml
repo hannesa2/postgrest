@@ -46,7 +46,7 @@ jobs:
     if: vars.RELEASE_ENABLED
     runs-on: ubuntu-24.04
     needs:
-      - docs
+#      - docs
       - test
       - build
     steps:
