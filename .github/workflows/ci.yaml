@@ -112,9 +112,8 @@ jobs:
 
 
   Build-Static-Nix:
-    name: Build Linux static (Nix)
-    runs-on: ubuntu-latest
-    needs: [Prepopulate-Nix-Cache-Linux]
+    name: Build Raspberry static (Nix)
+    runs-on: pi
     steps:
       - uses: actions/checkout@v4
       - name: Setup Nix Environment
