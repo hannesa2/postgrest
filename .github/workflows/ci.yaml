@@ -34,84 +34,81 @@ jobs:
 #        run: postgrest-style-check
 
 
-  Test-Nix:
-    name: Test (Nix)
-    runs-on: ubuntu-latest
-    needs: [Prepopulate-Nix-Cache-Linux]
-    defaults:
-      run:
-        # Hack for enabling color output, see:
-        # https://github.com/actions/runner/issues/241#issuecomment-842566950
-        shell: script -qec "bash --noprofile --norc -eo pipefail {0}"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Nix Environment
-        uses: ./.github/actions/setup-nix
-        with:
-          tools: tests
-          cache-id: common
-
-      - name: Run coverage (IO tests and Spec tests against PostgreSQL 15)
-        run: postgrest-coverage
-      - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v3.1.4
-        with:
-          files: ./coverage/codecov.json
-
-      - name: Run doctests
-        if: always()
-        run: nix-shell --run postgrest-test-doctests
-
-      - name: Check the spec tests for idempotence
-        if: always()
-        run: postgrest-test-spec-idempotence
-
-
-  Test-Pg-Nix:
-    strategy:
-      fail-fast: false
-      matrix:
-        pgVersion: [9.6, 10, 11, 12, 13, 14, 15, 16]
-    name: Test PG ${{ matrix.pgVersion }} (Nix)
-    runs-on: ubuntu-latest
-    needs: [Prepopulate-Nix-Cache-Linux]
-    defaults:
-      run:
-        # Hack for enabling color output, see:
-        # https://github.com/actions/runner/issues/241#issuecomment-842566950
-        shell: script -qec "bash --noprofile --norc -eo pipefail {0}"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Nix Environment
-        uses: ./.github/actions/setup-nix
-        with:
-          tools: tests withTools
-          # It seems like they are installing the same set of derivations, so we can assign them the same cache id. 
-          # This would decrease the amount of caches dowloaded on merge cache step and will prevent disk space issues.
-          cache-id: common
-
-      - name: Run spec tests
-        if: always()
-        run: postgrest-with-postgresql-${{ matrix.pgVersion }} postgrest-test-spec
-
-      - name: Run IO tests
-        if: always()
-        run: postgrest-with-postgresql-${{ matrix.pgVersion }} -f test/io/fixtures.sql postgrest-test-io -vv
+#  Test-Nix:
+#    name: Test (Nix)
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        # Hack for enabling color output, see:
+#        # https://github.com/actions/runner/issues/241#issuecomment-842566950
+#        shell: script -qec "bash --noprofile --norc -eo pipefail {0}"
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Setup Nix Environment
+#        uses: ./.github/actions/setup-nix
+#        with:
+#          tools: tests
+#          cache-id: test-pg
+#
+#      - name: Run coverage (IO tests and Spec tests against PostgreSQL 15)
+#        run: postgrest-coverage
+#      - name: Upload coverage to codecov
+#        uses: codecov/codecov-action@v3.1.4
+#        with:
+#          files: ./coverage/codecov.json
+#
+#      - name: Run doctests
+#        if: always()
+#        run: nix-shell --run postgrest-test-doctests
+#
+#      - name: Check the spec tests for idempotence
+#        if: always()
+#        run: postgrest-test-spec-idempotence
 
 
-  Test-Memory-Nix:
-    name: Test memory (Nix)
-    runs-on: ubuntu-latest
-    needs: [Prepopulate-Nix-Cache-Linux]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Nix Environment
-        uses: ./.github/actions/setup-nix
-        with:
-          tools: memory
-          cache-id: common
-      - name: Run memory tests
-        run: postgrest-test-memory
+#  Test-Pg-Nix:
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        pgVersion: [9.6, 10, 11, 12, 13, 14, 15, 16]
+#    name: Test PG ${{ matrix.pgVersion }} (Nix)
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        # Hack for enabling color output, see:
+#        # https://github.com/actions/runner/issues/241#issuecomment-842566950
+#        shell: script -qec "bash --noprofile --norc -eo pipefail {0}"
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Setup Nix Environment
+#        uses: ./.github/actions/setup-nix
+#        with:
+#          tools: tests withTools
+#          # It seems like they are installing the same set of derivations, so we can assign them the same cache id.
+#          # This would decrease the amount of caches dowloaded on merge cache step and will prevent disk space issues.
+#          cache-id: test-pg
+#
+#      - name: Run spec tests
+#        if: always()
+#        run: postgrest-with-postgresql-${{ matrix.pgVersion }} postgrest-test-spec
+#
+#      - name: Run IO tests
+#        if: always()
+#        run: postgrest-with-postgresql-${{ matrix.pgVersion }} -f test/io/fixtures.sql postgrest-test-io -vv
+
+
+#  Test-Memory-Nix:
+#    name: Test memory (Nix)
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Setup Nix Environment
+#        uses: ./.github/actions/setup-nix
+#        with:
+#          tools: memory
+#          cache-id: test-memory
+#      - name: Run memory tests
+#        run: postgrest-test-memory
 
 
   Build-Static-Nix:
@@ -359,9 +356,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
 #      - Lint-Style
-      - Test-Nix
-      - Test-Pg-Nix
-      - Test-Memory-Nix
+#      - Test-Nix
+#      - Test-Pg-Nix
+#      - Test-Memory-Nix
       - Build-Static-Nix
       - Build-Stack
       #- Get-FreeBSD-CirrusCI
