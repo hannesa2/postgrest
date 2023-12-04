@@ -214,21 +214,21 @@ jobs:
               .stack-work
             artifact: postgrest-ubuntu-x64
 
-          - name: MacOS
-            runs-on: macos-latest
-            cache: |
-              ~/.stack
-              .stack-work
-            artifact: postgrest-macos-x64
-
-          - name: Windows
-            runs-on: windows-latest
-            cache: |
-              ~\AppData\Roaming\stack
-              ~\AppData\Local\Programs\stack
-              .stack-work
-            deps: Add-Content $env:GITHUB_PATH $env:PGBIN
-            artifact: postgrest-windows-x64
+#          - name: MacOS
+#            runs-on: macos-latest
+#            cache: |
+#              ~/.stack
+#              .stack-work
+#            artifact: postgrest-macos-x64
+#
+#          - name: Windows
+#            runs-on: windows-latest
+#            cache: |
+#              ~\AppData\Roaming\stack
+#              ~\AppData\Local\Programs\stack
+#              .stack-work
+#            deps: Add-Content $env:GITHUB_PATH $env:PGBIN
+#            artifact: postgrest-windows-x64
 
     name: Build ${{ matrix.name }} (Stack)
     runs-on: ${{ matrix.runs-on }}
