@@ -154,7 +154,7 @@ jobs:
   #       cache-id: ['static-nix', 'test-pg', 'style', 'test-memory']
   #   steps:
   #     - uses: actions/checkout@v4
-  #     - uses: nixbuild/nix-quick-install-action@v26
+  #     - uses: nixbuild/nix-quick-install-action@v29
   #       with:
   #         nix_version: '2.13.6'
   #     - name: Restore and cache Nix store
